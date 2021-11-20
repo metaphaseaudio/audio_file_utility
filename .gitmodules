@@ -1,0 +1,9 @@
+[submodule "src/shared/metaphase_core"]
+	path = src/shared/metaphase_core
+	url = git@github.com:metaphaseaudio/metaphase_core.git
+[submodule "src/shared/MUDS"]
+	path = src/shared/MUDS
+	url = git@github.com:metaphaseaudio/MUDS.git
+[submodule "src/shared/JUCE"]
+	path = src/shared/JUCE
+	url = git@github.com:juce-framework/JUCE.git
