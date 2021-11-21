@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.19)
+cmake_minimum_required(VERSION 3.17)
 project(MAFU)
 
 set(MAFU_VERSION_MAJOR 1)
@@ -9,6 +9,7 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/shared/MUDS/cmake_snippets/CPP14Boilerplate.
 #------------------------------------------------------------------------------
 # Build the JUCE library
 #------------------------------------------------------------------------------
+add_definitions(-DJUCE_MODAL_LOOPS_PERMITTED=1)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/shared/JUCE)
 #------------------------------------------------------------------------------
 # Build Metaphase Shared Libraries

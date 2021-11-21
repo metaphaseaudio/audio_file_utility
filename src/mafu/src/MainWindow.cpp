@@ -188,8 +188,7 @@ bool MainWindow::perform (const InvocationInfo& info)
 void MainWindow::chooseFileToLoad()
 {
     juce::FileChooser chooser("Select an audio file...", juce::File(), "*.wav");
-//    chooser.launchAsync()
-//    if (chooser.browseForFileToOpen()) { load(chooser.getResult()); }
+    if (chooser.browseForFileToOpen()) { load(chooser.getResult()); }
 }
 
 
