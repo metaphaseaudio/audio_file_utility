@@ -9,7 +9,7 @@
 static const int max_frames_per_thread = 48000 * 2 * 5; // Guess at this (5 seconds of 48k, 2chan) -- it can be futz'd w/.
 
 MagPhaseChunkCalculator::MagPhaseChunkCalculator(
-        const juce::dsp::AudioBlock<float> data,
+        juce::dsp::AudioBlock<float> data,
         juce::dsp::AudioBlock<float> magnitude_out,
         juce::dsp::AudioBlock<float> phase_out,
         int fft_order, int x_overlap)
@@ -67,7 +67,13 @@ void SpectrogramComponent::recalculateFrames()
     const auto& gradient = r_Settings.getGradient();
 
     // reset the whole image
-    p_SpectrogramImage = std::make_unique<juce::Image>(juce::Image::RGB, (in_samps / fftSize) * xOverlap, fftSize / 2, true);
+    const auto y_size = std::accumulate(
+        r_Settings.getBinWeights().begin(),
+        r_Settings.getBinWeights().end(), 0,
+        [](float x, float y){ return std::round(x) + std::round(y); }
+    );
+
+    p_SpectrogramImage = std::make_unique<juce::Image>(juce::Image::RGB, (in_samps / fftSize) * xOverlap, y_size, true);
 
     const auto total_in_frames = std::ceil(in_samps / (float) fftSize);
     const auto n_chunks = std::ceil(total_in_frames / max_frames_per_thread);
@@ -112,7 +118,8 @@ void SpectrogramComponent::paint(juce::Graphics& g)
     g.drawImage(*p_SpectrogramImage, local_bounds);
 }
 
-void SpectrogramComponent::changeListenerCallback(juce::ChangeBroadcaster* source) { repaint(); }
+void SpectrogramComponent::changeListenerCallback(juce::ChangeBroadcaster* source)
+    { repaint(); }
 
 
 void SpectrogramComponent::fftChanged(const SpectrogramSettings* settings)
@@ -126,7 +133,6 @@ void SpectrogramComponent::gradientChanged(const SpectrogramSettings* settings)
     for (auto& chunk : m_Chunks)
         { chunk->recalculateSpectrogramImage(); }
 }
-
 
 SpectrogramChunkCalculator::SpectrogramChunkCalculator(
         const juce::dsp::AudioBlock<float>& data,
@@ -145,21 +151,18 @@ void SpectrogramChunkCalculator::recalculateSpectrogramImage()
 
     for (int s = x_size; --s >=0;)
     {
-        for (int bin = n_bins; --bin > 0;)
+        int px = 0;
+        for (int bin = 0; bin < n_bins; bin++)
         {
-            // TODO: This scaling from the juce tutorial kinda works? it also cuts off the top. we'll see about tweaking this.
-
-//            auto skewedProportionY = 1.0f - std::exp (std::log ((float) y / (float) imageHeight) * 0.2f);
-//            auto fftDataIndex = (size_t) juce::jlimit (0, m_FFTSize / 2, (int) (skewedProportionY * fftSize / 2));
-//            const int fft_i = (1.0f - std::exp (std::log ((float) bin / (float) m_FFTSize) * 0.2f)) * n_bins;
+            const auto px_heignt = r_Settings.getBinWeights()[bin];
             const int fft_i = bin + n_bins;
             const int in_sample = s * r_Settings.getFFTSize() + fft_i;
             const auto ptrValue = r_MagData.getChannelPointer(0)[in_sample];
             const auto sample_value = ptrValue / (r_Settings.getFFTSize() / 2.0f);
-//            jassert(sample_value <= 1.0);
             const auto scaleApplied = 1.0f - (meta::gain_coeff_to_db(sample_value) / dBMin);
             auto colour = r_Settings.getGradient().getColourAtPosition(scaleApplied);
-            m_Img.setPixelAt(s, bin, colour);
+            for (int i = std::round(px_heignt); --i >= 0; px++)
+                {m_Img.setPixelAt(s, px, colour);}
         }
     }
     sendChangeMessage();

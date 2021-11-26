@@ -40,8 +40,10 @@ public:
     void setXOverlap(int overlap);
     int getXOverlap() const { return m_XOverlap; }
 
+    const std::vector<float>& getBinWeights() const { return m_BinWeights; }
 private:
     juce::ListenerList<Listener> m_Listeners;
+    std::vector<float> m_BinWeights;
     int m_FFTOrder, m_XOverlap;
     float m_dBFSMax, m_dBFSMin;
     juce::ColourGradient m_Gradient;

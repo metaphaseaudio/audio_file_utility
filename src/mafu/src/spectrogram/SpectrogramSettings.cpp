@@ -28,9 +28,15 @@ SpectrogramSettings::SpectrogramSettings()
     float position = 0;
     for (auto& colour : colours)
     {
-        const auto log_position = meta::Interpolate<float>::parabolic(0.0f, 1.0f, position, 0);
-        m_Gradient.addColour(log_position, colour);
+        m_Gradient.addColour(position, colour);
         position += increment;
+    }
+
+    // Recalculate the bin size weights
+    for (int i = 0; i < getFFTSize() / 2; i++)
+    {
+        float x = float(i) / float(getFFTSize() / 2.0f);
+        m_BinWeights.push_back(meta::Interpolate<float>::parabolic(1, 20, x, 0));
     }
 }
 
@@ -43,6 +49,8 @@ void SpectrogramSettings::setGradient(const juce::ColourGradient& gradient)
 void SpectrogramSettings::setScale(const SpectrogramSettings::Scale& scale)
 {
     m_Scale = scale;
+//    m_BinWeights.clear();
+
     m_Listeners.call([this] (Listener& l) { l.fftChanged(this); });
 }
 
