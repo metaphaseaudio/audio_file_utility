@@ -22,6 +22,14 @@ public:
         MEL
     };
 
+    enum Window
+    {
+        RECT,
+        HANN,
+        HAMM,
+        BLACK
+    };
+
     SpectrogramSettings();
 
     void addListener(Listener* listener) { m_Listeners.add(listener); };
@@ -39,6 +47,8 @@ public:
 
     void setXOverlap(int overlap);
     int getXOverlap() const { return m_XOverlap; }
+
+    const std::vector<float>& getBinSizes();
 
 private:
     juce::ListenerList<Listener> m_Listeners;
