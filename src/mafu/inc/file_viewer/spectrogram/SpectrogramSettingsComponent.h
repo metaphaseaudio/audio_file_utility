@@ -15,7 +15,7 @@ class SpectrogramSettingsComponent
     , juce::ComboBox::Listener
 {
 public:
-    SpectrogramSettingsComponent(SpectrogramSettings& settings);
+    explicit SpectrogramSettingsComponent(SpectrogramSettings& settings);
     void resized() override;
 
 private:
@@ -24,8 +24,9 @@ private:
 
     SpectrogramSettings& r_Settings;
     meta::GradientDesigner m_GradientDesigner;
-    juce::Label m_SelectScaleLabel;
-    juce::ComboBox m_SelectScale;
+    juce::Label m_SelectScaleLabel, m_SelectFFTSizeLabel, m_SelectXOverlapLabel, m_GainMinLabel, m_GainMaxLabel;
+    juce::ComboBox m_SelectScale, m_SelectFFTSize, m_SelectXOverlap;
+    juce::Slider m_GainMin, m_GainMax;
 };
 
 

@@ -16,7 +16,7 @@ class MagPhaseChunkCalculator
 {
 public:
     MagPhaseChunkCalculator(
-        const juce::dsp::AudioBlock<float> data,
+        juce::dsp::AudioBlock<float> data,
         juce::dsp::AudioBlock<float> magnitude_out,
         juce::dsp::AudioBlock<float> phase_out,
         int fft_order, int x_overlap

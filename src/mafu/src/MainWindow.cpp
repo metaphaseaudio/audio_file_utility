@@ -178,7 +178,7 @@ bool MainWindow::perform (const InvocationInfo& info)
             break;
         case CommandIDs::spectrogram_settings:
             auto spectrogram_settings = std::make_unique<SpectrogramSettingsComponent>(m_ViewHandler.spectrogramSettings);
-            spectrogram_settings->setSize(300, 100);
+            spectrogram_settings->setSize(300, 120);
             auto& box = juce::CallOutBox::launchAsynchronously(std::move(spectrogram_settings), getScreenBounds(), &m_ViewHandler);
             break;
     }
