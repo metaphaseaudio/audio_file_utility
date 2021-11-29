@@ -22,6 +22,14 @@ public:
         MEL
     };
 
+    enum Window
+    {
+        RECT,
+        HANN,
+        HAMM,
+        BLACK
+    };
+
     SpectrogramSettings();
 
     void addListener(Listener* listener) { m_Listeners.add(listener); };
