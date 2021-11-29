@@ -11,6 +11,7 @@
 
 class MultiFileViewerComponent
     : public juce::Component
+    , juce::Slider::Listener
 {
 public:
     MultiFileViewerComponent();
@@ -25,9 +26,13 @@ public:
     bool fileIsOpen(const juce::File& filepath) const;
 
     SpectrogramSettings spectrogramSettings;
+
 private:
+    void sliderValueChanged(juce::Slider* slider);
+
     FileViewerComponent* const* findViewer(const juce::File& filepath) const;
     juce::OwnedArray<FileViewerComponent> m_Views;
     juce::TabbedComponent m_TabHandler;
+    juce::Slider m_SpecWavSlider;
 };
 

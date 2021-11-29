@@ -33,7 +33,8 @@ SpectrogramSettings::SpectrogramSettings()
     }
 
     // Recalculate the bin size weights
-    for (int i = 0; i < getFFTSize() / 2; i++)
+    const auto halfft = getFFTSize() / 2;
+    for (int i = 0; i < halfft; i++)
     {
         float x = float(i) / float(getFFTSize() / 2.0f);
         m_BinWeights.push_back(meta::Interpolate<float>::parabolic(1, 20, x, 0));

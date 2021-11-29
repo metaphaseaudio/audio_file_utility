@@ -8,9 +8,13 @@
 
 MultiFileViewerComponent::MultiFileViewerComponent()
     : m_TabHandler(juce::TabbedButtonBar::TabsAtTop)
+    , m_SpecWavSlider(juce::Slider::SliderStyle::LinearHorizontal, juce::Slider::NoTextBox)
 {
     setSize (1000, 800);
     addAndMakeVisible(m_TabHandler);
+    addAndMakeVisible(m_SpecWavSlider);
+    m_SpecWavSlider.addListener(this);
+    m_SpecWavSlider.setValue(5);
 }
 
 //==============================================================================
@@ -24,7 +28,10 @@ void MultiFileViewerComponent::paint (juce::Graphics& g)
 
 void MultiFileViewerComponent::resized()
 {
-    m_TabHandler.setBounds(getLocalBounds());
+    auto local_bounds = getLocalBounds();
+    auto low_ctrls = local_bounds.removeFromBottom(22);
+    m_TabHandler.setBounds(local_bounds);
+    m_SpecWavSlider.setBounds(low_ctrls.removeFromLeft(std::min(getWidth() / 10, 200)));
 }
 
 void MultiFileViewerComponent::addFile(const juce::File& filepath, juce::AudioBuffer<float>& data, double sample_rate)
@@ -73,3 +80,12 @@ juce::RecentlyOpenedFilesList MultiFileViewerComponent::listFiles() const
     return files;
 }
 
+
+void MultiFileViewerComponent::sliderValueChanged(juce::Slider* slider)
+{
+    // slider's default is 0 - 10 float, div 10 to get alpha
+    for (auto& viewer : m_Views)
+    {
+        viewer->setWaveformSpectrogramRatio(slider->getValue() / 5.0);
+    }
+}
